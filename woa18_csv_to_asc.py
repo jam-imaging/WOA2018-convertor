@@ -4,6 +4,7 @@ import qgrid
 import numpy as np
 import os
 import argparse
+import lib_woa18_convert as l_woa
 
 my_parser = argparse.ArgumentParser(description='Converts CSV files to ASCII files')
 my_parser.add_argument('--i',
@@ -16,97 +17,6 @@ my_parser.add_argument('--o',
                        help='the path to list')
 
 args = my_parser.parse_args()
-
-
-#functions
-def plot_layer_by_number(df,column):
-    
-    from plotly import graph_objs as go
-    from plotly.subplots import make_subplots
-    import plotly
-    import os
-    
-
-    trace1     = go.Scattergl(
-        x      = df['LON'],
-        y      = df['LAT'],
-        name   = 'Grid Lat Lon',
-        mode   = 'markers',
-        line   = dict(color='#000000'), 
-        marker = dict(size=4, color=df[curr_depth_layer],colorbar=dict(title='Temp',titleside='top'))
-    )
-        
-    data = [trace1]
-    fig  = go.Figure(data=data)
-
-    fig['layout'].update(
-        title         = 'Position Map',
-        paper_bgcolor = '#414c50',
-        plot_bgcolor  = '#414c50',
-        font          =  dict(color='#f0f0f0'),
-        yaxis         =  dict(scaleanchor="x", scaleratio=1),
-        legend        =  dict(yanchor="top",y=0.99,xanchor="left",x=0.01,bgcolor='#000000')
-    )
-
-    fig.show() 
-
-    return None
-
-def get_csv_data(path_csv):
-    
-    import pandas as pd
-
-    sep=","
-    comment="#"
-    skiprows=1
-    df = {}
-    
-    try:
-        df = pd.read_csv(path_csv,sep=sep,skiprows=skiprows,engine='python')
-        str_status = 'CSV : Data extracted'
-    except Exception as e:
-        str_status = ("Error: {}: {}".format(type(e).__name__, e))
-
-    return(str_status,df)
-
-def plot_compare_data(df_s1,df_s2):    
-    from plotly import graph_objs as go
-    from plotly.subplots import make_subplots
-    import plotly
-    import os
-    
-    trace1     = go.Scattergl(
-        x      = df_s1['LON'],
-        y      = df_s1['0'],
-        name   = 'CSV',
-        mode   = 'markers',
-        line   = dict(color='#000000'), 
-        marker = dict(size=4)
-    )
-    
-    trace2     = go.Scattergl(
-        x      = df_s2['LON'],
-        y      = df_s2['0'],
-        name   = 'Ascii',
-        mode   = 'markers',
-        line   = dict(color='#ff0000'), 
-        marker = dict(size=4)
-    )
-    
-    data = [trace1,trace2]
-    fig  = go.Figure(data=data)
-
-    fig['layout'].update(
-        title         = 'Data Graph',
-        paper_bgcolor = '#414c50',
-        plot_bgcolor  = '#414c50',
-        font          =  dict(color='#f0f0f0'),
-        yaxis         =  dict(scaleanchor="x", scaleratio=1),
-        legend        =  dict(yanchor="top",y=0.99,xanchor="left",x=0.01,bgcolor='#000000')
-    )
-
-    fig.show() 
-    return None
 
 
 #user_paths
@@ -137,7 +47,7 @@ print('Output > ' + dir_out)
 if not os.path.isdir(dir_out):
     os.makedirs(dir_out)
 
-str_status,df_dat = get_csv_data(path_csv)
+str_status,df_dat = l_woa.get_csv_data(path_csv)
 df_dat = df_dat.rename(columns={"#COMMA SEPARATED LATITUDE": "LAT", " LONGITUDE":"LON"," AND VALUES AT DEPTHS (M):0": "0"}, errors="ignore")
 df_dat = df_dat.fillna(config_grid['nodata_value'])
 
@@ -152,7 +62,7 @@ for curr_depth_layer in l_depth_layers:
 #curr_depth_layer = '0'
 
     if flag_validate is True:
-        plot_layer_by_number(df_dat,curr_depth_layer)
+        l_woa.plot_layer_by_number(df_dat,curr_depth_layer)
 
     path_asc = dir_out + '/' + curr_filename + '_depth_[' +  curr_depth_layer + '].asc'
 
