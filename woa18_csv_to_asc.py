@@ -5,26 +5,52 @@ import numpy as np
 import os
 import argparse
 import lib_woa18_convert as l_woa
+import sys
 
-my_parser = argparse.ArgumentParser(description='Converts CSV files to ASCII files')
-my_parser.add_argument('--i',
-                       metavar='i',
-                       type=str,
-                       help='the path to list')
-my_parser.add_argument('--o',
-                       metavar='o',
-                       type=str,
-                       help='the path to list')
+if __name__ == "__main__":
+    try:
+        if len(sys.argv) > 1:
+            my_parser = argparse.ArgumentParser(description='Converts CSV files to ASCII files')
+            my_parser.add_argument('--i',
+                                metavar='i',
+                                type=str,
+                                help='the path to list')
+            my_parser.add_argument('--o',
+                                metavar='o',
+                                type=str,
+                                help='the path to list')
 
-args = my_parser.parse_args()
+            args = my_parser.parse_args()
+            path_csv     = args.i
+        else:
+            print('No Arguments Provided... using defaults')
+            path_csv     = 'E:/Data/GIS/CSV_grids_1_degree/Temperature/decav_climate_normal_1981_2010/Annual_t00/standard_deviation_sd/woa18_decav_t00sd01.csv'
 
+        config_process = {}
+        config_process['path_csv'] = path_csv
+        config_process['filename'] = os.path.basename(path_csv).split('.')[0]
+        config_process['dir_out']  = os.path.dirname(path_csv) + '/' + config_process['filename']
+
+        config_grid = {
+            'start_lat':-89.5,
+            'end_lat':89.5,
+            'start_lon':-179.5,
+            'end_lon':179.5,
+            'nodata_value':-9999,
+            'cellsize':1
+        }
+
+
+        print(config_process)
+        input()
+    except ValueError as e:
+        print('Error: ' + e)
 
 #user_paths
 #path_csv     = 'E:/Data/GIS/CSV_grids_1_degree/Temperature/decav_climate_normal_1981_2010/Annual_t00/standard_deviation_sd/woa18_decav_t00sd01.csv'
 #dir_out_base = 'E:/Data/GIS/CSV_grids_1_degree/Temperature/decav_climate_normal_1981_2010/Annual_t00/standard_deviation_sd'
 flag_validate = False
 
-path_csv     = args.i
 
 config_grid = {
     'start_lat':-89.5,
@@ -34,6 +60,9 @@ config_grid = {
     'nodata_value':-9999,
     'cellsize':1
 }
+
+
+
 
 curr_filename = os.path.basename(path_csv).split('.')[0]
 dir_out_base  = os.path.dirname(path_csv)
