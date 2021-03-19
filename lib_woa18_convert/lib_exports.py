@@ -49,11 +49,10 @@ def csv_to_asc_raw_all(config_grid, df_dat):
 
             print('Depth layer: ' + curr_depth_layer + ', Saved > ' +  path_asc)
             file_asc.close()   
-        str_status = 'Files written'
     except ValueError as e:
-        str_status = ("Error: {}: {}".format(type(e).__name__, e))
+        print("Error: {}: {}".format(type(e).__name__, e))
         
-    return(str_status)
+    return None
 
 def csv_to_asc_depth_all(config_grid, df_dat):
 
@@ -105,8 +104,18 @@ def csv_to_asc_depth_all(config_grid, df_dat):
 
             print('Depth layer: ' + curr_depth_layer + ', Saved > ' +  path_asc)
             file_asc.close()    
-            str_status = 'Files written'
     except ValueError as e:
-        str_status = ("Error: {}: {}".format(type(e).__name__, e))
+        print("Error: {}: {}".format(type(e).__name__, e))
         
-    return(str_status)
+    return None
+
+
+def asc_to_asc_minmax_all(config_grid):
+
+    try:
+        print('a')
+    except ValueError as e:
+        print("Error: {}: {}".format(type(e).__name__, e))
+
+
+    return None

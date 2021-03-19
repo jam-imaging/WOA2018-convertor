@@ -55,18 +55,14 @@ if __name__ == "__main__":
             if args.r:
                 print(dict_help['r'])
                 config_grid['path_csv'] = args.r
-                str_status,df_dat = l_woa.get_csv_data(config_grid)
-                print(str_status)
-                str_status = l_woa.csv_to_asc_raw_all(config_grid, df_dat)
-                print(str_status)
+                df_dat = l_woa.get_csv_data(config_grid)
+                l_woa.csv_to_asc_raw_all(config_grid, df_dat)
 
             if args.d:
                 print(dict_help['d'])
                 config_grid['path_csv'] = args.d
-                str_status,df_dat = l_woa.get_csv_data(config_grid)
-                print(str_status)
-                str_status,df_dat = l_woa.csv_to_asc_depth_all(config_grid, df_dat)
-                print(str_status)
+                df_dat = l_woa.get_csv_data(config_grid)
+                l_woa.csv_to_asc_depth_all(config_grid, df_dat)
 
             if args.rm:
                 print(dict_help['rm'])
@@ -75,15 +71,15 @@ if __name__ == "__main__":
                 l_path_csv = [s for s in l_path_csv if '.csv' in s]
                 print('Found ' + str(len(l_path_csv)) + ' files')
                 for c_path_csv in l_path_csv:
-                    print('Processing ' + c_path_csv)
                     config_grid['path_csv'] = dir_csv + '/' + c_path_csv
-                    str_status,df_dat = l_woa.get_csv_data(config_grid)
-                    print(str_status)
-                    str_status = l_woa.csv_to_asc_raw_all(config_grid, df_dat)
-                    print(str_status)
+                    df_dat = l_woa.get_csv_data(config_grid)
+                    l_woa.csv_to_asc_raw_all(config_grid, df_dat)
 
             if args.mm:
-                dir_asc    = args.mm
+                config_grid['dir_asc'] = args.mm
+                str_status = l_woa.asc_to_asc_minmax_all(config_grid)
+
+
         else:
             print('No Arguments Provided.... Please enter correct arguments and try again or see -h for help')
 
