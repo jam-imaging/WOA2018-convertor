@@ -3,12 +3,14 @@ import argparse
 import lib_woa18_convert as l_woa
 import sys
 import os
+from multiprocessing import Pool
 
 dict_help = {
     'r':'convert single CSV file to depth layered set of raw data ASC files',
     'rm':'convert multiple CSV files to depth layered sets of raw data ASC files',
     'd':'convert single CSV file to depth layered set of depth data ASC files',
-    'mm':'convert multiple depth layered sets of ASC files to single depth layered set of min and max ASC files'
+    'mm':'convert multiple depth layered sets of ASC files to single depth layered set of min and max ASC files',
+    'p':'enable option for using multiprocessing with N number of processes'
 }
 
 config_grid = {
@@ -21,10 +23,9 @@ config_grid = {
 }
 
 if __name__ == "__main__":
+
     try:
         if len(sys.argv) > 1:
-
-
 
             my_parser = argparse.ArgumentParser(description='Converts CSV files to ASCII files. Options to convert single file, multiple files, generate depth files or minmax files')
 
@@ -38,6 +39,7 @@ if __name__ == "__main__":
                                 type=str,
                                 help=dict_help['rm']
                                 )
+
             my_parser.add_argument('-d',
                                 metavar='-depth',
                                 type=str,
@@ -50,30 +52,42 @@ if __name__ == "__main__":
                                 help=dict_help['mm']
                                 )
 
+            my_parser.add_argument('-p',
+                                metavar='-pro',
+                                type=str,
+                                help=dict_help['p']
+                                )
             args = my_parser.parse_args()
 
             if args.r:
                 print(dict_help['r'])
                 config_grid['path_csv'] = args.r
-                df_dat = l_woa.get_csv_data(config_grid)
-                l_woa.csv_to_asc_raw_all(config_grid, df_dat)
+                l_woa.csv_to_asc_raw_all(config_grid)
 
             if args.d:
                 print(dict_help['d'])
                 config_grid['path_csv'] = args.d
-                df_dat = l_woa.get_csv_data(config_grid)
-                l_woa.csv_to_asc_depth_all(config_grid, df_dat)
+                l_woa.csv_to_asc_depth_all(config_grid)
 
             if args.rm:
                 print(dict_help['rm'])
-                dir_csv    = args.rm
-                l_path_csv = os.listdir(dir_csv)
-                l_path_csv = [s for s in l_path_csv if '.csv' in s]
-                print('Found ' + str(len(l_path_csv)) + ' files')
-                for c_path_csv in l_path_csv:
-                    config_grid['path_csv'] = dir_csv + '/' + c_path_csv
-                    df_dat = l_woa.get_csv_data(config_grid)
-                    l_woa.csv_to_asc_raw_all(config_grid, df_dat)
+                l_path_csv = l_woa.get_list_of_csv(args.rm)
+
+                if args.p:
+                    print(dict_help['p'])
+                    rm_pool = Pool(int(args.p))
+
+                    l_process = []
+                    for c_path_csv in l_path_csv:
+                        c_config_grid = dict(config_grid)
+                        c_config_grid['path_csv'] = c_path_csv
+                        l_process.append(c_config_grid)
+                    rm_pool.map(l_woa.csv_to_asc_raw_all,l_process,chunksize=1)
+
+                else:
+                    for c_path_csv in l_path_csv:
+                        config_grid['path_csv'] = c_path_csv
+                        l_woa.csv_to_asc_raw_all(config_grid)
 
             if args.mm:
                 config_grid['dir_asc'] = args.mm

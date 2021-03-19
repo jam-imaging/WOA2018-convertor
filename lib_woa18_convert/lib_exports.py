@@ -1,7 +1,11 @@
-def csv_to_asc_raw_all(config_grid, df_dat):
+from .lib_imports import *
+
+def csv_to_asc_raw_all(config_grid):
 
     import os
     import numpy as np
+
+    df_dat = get_csv_data(config_grid)
 
     try:
         curr_dataset = os.path.basename(config_grid['path_csv']).split('.')[0]
@@ -54,10 +58,12 @@ def csv_to_asc_raw_all(config_grid, df_dat):
         
     return None
 
-def csv_to_asc_depth_all(config_grid, df_dat):
+def csv_to_asc_depth_all(config_grid):
 
     import os
     import numpy as np
+
+    df_dat = get_csv_data(config_grid)
 
     try:
         curr_dataset = os.path.basename(config_grid['path_csv']).split('.')[0]
@@ -109,6 +115,11 @@ def csv_to_asc_depth_all(config_grid, df_dat):
         
     return None
 
+def folder_csv_to_asc_raw_all(config_grid):
+
+
+
+    return None
 
 def asc_to_asc_minmax_all(config_grid):
 

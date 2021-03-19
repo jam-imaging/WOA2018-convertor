@@ -26,5 +26,7 @@ optional arguments:
                files
   -mm -minmax  convert multiple depth layered sets of ASC files to single
                depth layered set of min and max ASC files
+  -p -pro      enable option for using multiprocessing with N number of
+               processes
 ```
 

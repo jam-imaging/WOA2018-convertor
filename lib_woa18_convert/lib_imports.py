@@ -8,11 +8,25 @@ def get_csv_data(config_grid):
     df = {}
     
     try:
-        df = pd.read_csv(config_grid['path_csv'],sep=sep,skiprows=skiprows,engine='python')
-        str_status = 'CSV : Data extracted'
+        path_csv = config_grid['path_csv']
+        df = pd.read_csv(path_csv,sep=sep,skiprows=skiprows,engine='python')
+        print('CSV : Data extracted')
         df = df.rename(columns={"#COMMA SEPARATED LATITUDE": "LAT", " LONGITUDE":"LON"," AND VALUES AT DEPTHS (M):0": "0"}, errors="ignore")
         df = df.fillna(config_grid['nodata_value'])
     except Exception as e:
-        str_status = ("Error: {}: {}".format(type(e).__name__, e))
+        print("Error: {}: {}".format(type(e).__name__, e))
 
-    return(str_status,df)
+    return(df)
+
+def get_list_of_csv(dir_csv):
+
+    import os
+
+    l_path_csv = os.listdir(dir_csv)
+    l_path_csv = [s for s in l_path_csv if '.csv' in s]
+    print('Found ' + str(len(l_path_csv)) + ' files')
+
+    l_fullpath = []
+    for c_path_csv in l_path_csv:
+        l_fullpath.append(dir_csv + '/' + c_path_csv)
+    return l_fullpath
