@@ -1,8 +1,13 @@
 # WOA Grid Generator
 ---
 ## Summary
-- Converting ASCII Grid data to ASCII formats which can used for analysis
-- Converting CSV Grid data to ASCII formats which can used for analysis
+Converting CSV Grid data to ASCII formats which can used for analysis
+- Convert single CSV file to depth layered raw data ASC files
+- Convert multiple CSV files to depth layered ASC files
+- Optional multiprocessing to run parallel computations
+- Convert single CSV file to depth layered depth data ASC files
+- Conver multiple depth layered depth data ASC files to single depth layered ASC file
+
 
 ### Data Source
 World Ocean Atlas 2018 data is available online at the following link
