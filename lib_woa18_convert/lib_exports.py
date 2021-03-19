@@ -115,16 +115,34 @@ def csv_to_asc_depth_all(config_grid):
         
     return None
 
-def folder_csv_to_asc_raw_all(config_grid):
-
-
-
-    return None
-
 def asc_to_asc_minmax_all(config_grid):
 
+    import numpy as np
+    import pandas as pd
     try:
-        print('a')
+        dir_asc   = config_grid['dir_asc']
+        curr_depth_layer = '10'
+        l_path_asc = get_dir_list(dir_asc,[])
+        c = [s for s in l_path_asc if '[' + curr_depth_layer + ']' in s]
+
+        df = pd.DataFrame()
+
+
+        for i in range(len(c)):
+            all_data = []
+            with open(c[i],'r') as file_dat:
+                lines_all = file_dat.readlines()
+                lines_all = lines_all[6:]
+                for line_curr in lines_all:
+                    line_curr = line_curr.split('\n')[0]
+                    all_data  = all_data + (line_curr.split())
+                df[str(i)] = all_data
+
+        l_min = df.min(axis=1)
+        l_max = df.max(axis=1)
+        df['min'] = l_min
+        df['max'] = l_max
+        
     except ValueError as e:
         print("Error: {}: {}".format(type(e).__name__, e))
 

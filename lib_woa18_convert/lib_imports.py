@@ -30,3 +30,17 @@ def get_list_of_csv(dir_csv):
     for c_path_csv in l_path_csv:
         l_fullpath.append(dir_csv + '/' + c_path_csv)
     return l_fullpath
+
+def get_dir_list(dir_name, dir_list):
+
+    import os
+    list_names = os.listdir(dir_name) 
+    list_names = [ s for s in list_names if '.DS' not in s]
+
+    for curr_name in list_names:
+        path_full = dir_name + '/' + curr_name
+        if os.path.isdir(path_full):
+            dir_list = get_dir_list(path_full + '/', dir_list)
+        else:
+            dir_list.append(path_full)
+    return dir_list
