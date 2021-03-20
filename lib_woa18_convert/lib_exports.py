@@ -1,22 +1,30 @@
 from .lib_imports import *
+from .lib_grids import *
+import numpy as np    
+import os
+
+
+def write_asc_header(path_asc, config_grid):
+    with open(path_asc,'w') as file_asc:
+        file_asc.write('ncols '        +  str(config_grid['ncols'])        + '\n')
+        file_asc.write('nrows '        +  str(config_grid['nrows'])        + '\n')
+        file_asc.write('xllcorner '    +  str(config_grid['xllcorner'])    + '\n')
+        file_asc.write('yllcorner '    +  str(config_grid['yllcorner'])    + '\n')
+        file_asc.write('cellsize '     +  str(config_grid['cellsize'])     + '\n')
+        file_asc.write('nodata_value ' +  str(config_grid['nodata_value']) + '\n')
+    return None
 
 def csv_to_asc_raw_all(config_grid):
 
-    import os
-    import numpy as np
-
-    df_dat = get_csv_data(config_grid)
-
     try:
+        df_dat       = get_csv_data(config_grid)
         curr_dataset = os.path.basename(config_grid['path_csv']).split('.')[0]
-        dir_out  = os.path.dirname(config_grid['path_csv']) + '/' + curr_dataset
+        dir_out      = os.path.dirname(config_grid['path_csv']) + '/' + curr_dataset
 
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
 
-        bins_lat = np.arange(config_grid['start_lat'],config_grid['end_lat'] + config_grid['cellsize'],config_grid['cellsize'])
-        bins_lon = np.arange(config_grid['start_lon'],config_grid['end_lon'] + config_grid['cellsize'],config_grid['cellsize'])
-        bins_lat = np.flip(bins_lat, axis=None)
+        config_grid = make_lat_lon_grids(config_grid)
 
         l_depth_layers = list(df_dat.columns)
         l_depth_layers = l_depth_layers[2:]
@@ -24,24 +32,11 @@ def csv_to_asc_raw_all(config_grid):
         for curr_depth_layer in l_depth_layers:
 
             path_asc = dir_out + '/' + curr_dataset + '_depth_[' +  curr_depth_layer + '].asc'
+            write_asc_header(path_asc, config_grid)
 
-            ncols     = len(bins_lon)
-            nrows     = len(bins_lat)
-            xllcorner = min(bins_lon) - (config_grid['cellsize']/2)
-            yllcorner = min(bins_lat) - (config_grid['cellsize']/2)
-
-            with open(path_asc,'w') as file_asc:
-
-                file_asc.write('ncols ' +  str(ncols) + '\n')
-                file_asc.write('nrows ' +  str(nrows) + '\n')
-
-                file_asc.write('xllcorner '    +  str(xllcorner)                   + '\n')
-                file_asc.write('yllcorner '    +  str(yllcorner)                   + '\n')
-                file_asc.write('cellsize '     +  str(config_grid['cellsize'])     + '\n')
-                file_asc.write('nodata_value ' +  str(config_grid['nodata_value']) + '\n')
-
-                for c_lat in bins_lat:
-                    for c_lon in bins_lon:
+            with open(path_asc,'a+') as file_asc:
+                for c_lat in config_grid['bins_lat']:
+                    for c_lon in config_grid['bins_lon']:
                         res = df_dat[curr_depth_layer].loc[(df_dat['LAT'] == c_lat) & (df_dat['LON'] == c_lon)]
                         if len(res):
                             r = (res.item())
@@ -60,21 +55,15 @@ def csv_to_asc_raw_all(config_grid):
 
 def csv_to_asc_depth_all(config_grid):
 
-    import os
-    import numpy as np
-
-    df_dat = get_csv_data(config_grid)
-
     try:
+        df_dat       = get_csv_data(config_grid)
         curr_dataset = os.path.basename(config_grid['path_csv']).split('.')[0]
-        dir_out  = os.path.dirname(config_grid['path_csv']) + '/depth_' + curr_dataset
+        dir_out      = os.path.dirname(config_grid['path_csv']) + '/depth_' + curr_dataset
 
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
 
-        bins_lat = np.arange(config_grid['start_lat'],config_grid['end_lat'] + config_grid['cellsize'],config_grid['cellsize'])
-        bins_lon = np.arange(config_grid['start_lon'],config_grid['end_lon'] + config_grid['cellsize'],config_grid['cellsize'])
-        bins_lat = np.flip(bins_lat, axis=None)
+        config_grid = make_lat_lon_grids(config_grid)
 
         l_depth_layers = list(df_dat.columns)
         l_depth_layers = l_depth_layers[2:]
@@ -82,24 +71,11 @@ def csv_to_asc_depth_all(config_grid):
         for curr_depth_layer in l_depth_layers:
 
             path_asc = dir_out + '/depth_' + curr_dataset + '_depth_[' +  curr_depth_layer + '].asc'
+            write_asc_header(path_asc, config_grid)
 
-            ncols     = len(bins_lon)
-            nrows     = len(bins_lat)
-            xllcorner = min(bins_lon) - (config_grid['cellsize']/2)
-            yllcorner = min(bins_lat) - (config_grid['cellsize']/2)
-
-            with open(path_asc,'w') as file_asc:
-
-                file_asc.write('ncols ' +  str(ncols) + '\n')
-                file_asc.write('nrows ' +  str(nrows) + '\n')
-
-                file_asc.write('xllcorner '    +  str(xllcorner)                   + '\n')
-                file_asc.write('yllcorner '    +  str(yllcorner)                   + '\n')
-                file_asc.write('cellsize '     +  str(config_grid['cellsize'])     + '\n')
-                file_asc.write('nodata_value ' +  str(config_grid['nodata_value']) + '\n')
-
-                for c_lat in bins_lat:
-                    for c_lon in bins_lon:
+            with open(path_asc,'a+') as file_asc:
+                for c_lat in config_grid['bins_lat']:
+                    for c_lon in config_grid['bins_lon']:
                         res = df_dat.loc[(df_dat['LAT'] == c_lat) & (df_dat['LON'] == c_lon)]
                         if len(res):
                             r = float(curr_depth_layer)
@@ -117,9 +93,7 @@ def csv_to_asc_depth_all(config_grid):
 
 def asc_to_asc_minmax_all(config_grid):
 
-    import numpy as np
     import pandas as pd
-    import os
 
     try:
         
@@ -129,13 +103,7 @@ def asc_to_asc_minmax_all(config_grid):
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
 
-        bins_lat = np.arange(config_grid['start_lat'],config_grid['end_lat'] + config_grid['cellsize'],config_grid['cellsize'])
-        bins_lon = np.arange(config_grid['start_lon'],config_grid['end_lon'] + config_grid['cellsize'],config_grid['cellsize'])
-        bins_lat = np.flip(bins_lat, axis=None)
-        ncols     = len(bins_lon)
-        nrows     = len(bins_lat)
-        xllcorner = min(bins_lon) - (config_grid['cellsize']/2)
-        yllcorner = min(bins_lat) - (config_grid['cellsize']/2)
+        config_grid = make_lat_lon_grids(config_grid)
 
         l_path_asc = get_dir_list(dir_asc,[])
         l_depth_layers = ['10']
@@ -151,30 +119,28 @@ def asc_to_asc_minmax_all(config_grid):
                     lines_all = file_dat.readlines()
                     lines_all = lines_all[6:]
                     for line_curr in lines_all:
-                        line_curr = line_curr.split('\n')[0]
+                        #line_curr = line_curr.split('\n')[0]
                         all_data  = all_data + (line_curr.split())
                     df[str(i)] = all_data
+
+            df = df.astype(float)
+            df = df.replace(-9999.0,np.nan)
 
             l_min = df.min(axis=1)
             l_max = df.max(axis=1)
             df['min'] = l_min
             df['max'] = l_max
-            df = df.replace(np.nan,'-9999')
+            df = df.replace(np.nan,-9999)
+            print(df)
+
             path_asc = dir_out + '/min_' + '_depth_[' +  curr_depth_layer + '].asc'
 
-            with open(path_asc,'w') as file_asc:
+            write_asc_header(path_asc, config_grid)
 
-                file_asc.write('ncols ' +  str(ncols) + '\n')
-                file_asc.write('nrows ' +  str(nrows) + '\n')
-
-                file_asc.write('xllcorner '    +  str(xllcorner)                   + '\n')
-                file_asc.write('yllcorner '    +  str(yllcorner)                   + '\n')
-                file_asc.write('cellsize '     +  str(config_grid['cellsize'])     + '\n')
-                file_asc.write('nodata_value ' +  str(config_grid['nodata_value']) + '\n')
-
+            with open(path_asc,'a+') as file_asc:
                 c_i = 0
-                for c_lat in bins_lat:
-                    for c_lon in bins_lon:
+                for c_lat in config_grid['bins_lat']:
+                    for c_lon in config_grid['bins_lon']:
                         file_asc.write(str(df['min'].iloc[c_i]) + ' ')
                         c_i = c_i + 1
                     file_asc.write('\n')
