@@ -97,11 +97,14 @@ def asc_to_asc_minmax_all(config_grid):
 
     try:
         
-        dir_asc  = config_grid['dir_asc']
-        dir_out  = dir_asc + '/min'
+        dir_asc      = config_grid['dir_asc']
+        dir_out_min  = dir_asc + '/min'
+        dir_out_max  = dir_asc + '/max'
 
-        if not os.path.isdir(dir_out):
-            os.makedirs(dir_out)
+        if not os.path.isdir(dir_out_min):
+            os.makedirs(dir_out_min)
+        if not os.path.isdir(dir_out_max):
+            os.makedirs(dir_out_max)
 
         config_grid = make_lat_lon_grids(config_grid)
 
@@ -131,9 +134,8 @@ def asc_to_asc_minmax_all(config_grid):
             df['min'] = l_min
             df['max'] = l_max
             df = df.replace(np.nan,-9999)
-            print(df)
 
-            path_asc = dir_out + '/min_' + '_depth_[' +  curr_depth_layer + '].asc'
+            path_asc = dir_out_min + '/min_' + '_depth_[' +  curr_depth_layer + '].asc'
 
             write_asc_header(path_asc, config_grid)
 
@@ -142,6 +144,18 @@ def asc_to_asc_minmax_all(config_grid):
                 for c_lat in config_grid['bins_lat']:
                     for c_lon in config_grid['bins_lon']:
                         file_asc.write(str(df['min'].iloc[c_i]) + ' ')
+                        c_i = c_i + 1
+                    file_asc.write('\n')
+
+            path_asc = dir_out_max + '/max_' + '_depth_[' +  curr_depth_layer + '].asc'
+
+            write_asc_header(path_asc, config_grid)
+
+            with open(path_asc,'a+') as file_asc:
+                c_i = 0
+                for c_lat in config_grid['bins_lat']:
+                    for c_lon in config_grid['bins_lon']:
+                        file_asc.write(str(df['max'].iloc[c_i]) + ' ')
                         c_i = c_i + 1
                     file_asc.write('\n')
 

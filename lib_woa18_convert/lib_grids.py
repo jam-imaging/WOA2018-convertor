@@ -1,5 +1,7 @@
 def make_lat_lon_grids(config_grid):
 
+    import numpy as np
+
     bins_lat = np.arange(config_grid['start_lat'],config_grid['end_lat'] + config_grid['cellsize'],config_grid['cellsize'])
     bins_lon = np.arange(config_grid['start_lon'],config_grid['end_lon'] + config_grid['cellsize'],config_grid['cellsize'])
     bins_lat = np.flip(bins_lat, axis=None)
