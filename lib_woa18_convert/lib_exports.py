@@ -106,6 +106,7 @@ def asc_to_asc_minmax_all(config_grid):
         if not os.path.isdir(dir_out_max):
             os.makedirs(dir_out_max)
 
+        #need to get depth layers
         config_grid = make_lat_lon_grids(config_grid)
 
         l_path_asc = get_dir_list(dir_asc,[])
@@ -114,6 +115,7 @@ def asc_to_asc_minmax_all(config_grid):
         for curr_depth_layer in l_depth_layers:
 
             c = [s for s in l_path_asc if '[' + curr_depth_layer + ']' in s]
+            print('Number of files found: ' + str(len(c)))
             df = pd.DataFrame()
 
             for i in range(len(c)):
@@ -122,7 +124,6 @@ def asc_to_asc_minmax_all(config_grid):
                     lines_all = file_dat.readlines()
                     lines_all = lines_all[6:]
                     for line_curr in lines_all:
-                        #line_curr = line_curr.split('\n')[0]
                         all_data  = all_data + (line_curr.split())
                     df[str(i)] = all_data
 
@@ -146,6 +147,9 @@ def asc_to_asc_minmax_all(config_grid):
                         file_asc.write(str(df['min'].iloc[c_i]) + ' ')
                         c_i = c_i + 1
                     file_asc.write('\n')
+
+            print('Depth layer: ' + curr_depth_layer + ', Saved > ' +  path_asc)
+            file_asc.close()   
 
             path_asc = dir_out_max + '/max_' + '_depth_[' +  curr_depth_layer + '].asc'
 

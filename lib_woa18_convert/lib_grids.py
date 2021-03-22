@@ -14,3 +14,22 @@ def make_lat_lon_grids(config_grid):
     config_grid['bins_lon'] = bins_lon
 
     return config_grid
+
+def get_depth_layers(dir_csv):
+
+    import re
+    import os
+
+    l_path_csv = os.listdir(dir_csv)
+    l_path_csv = [s for s in l_path_csv if '.csv' in s]
+    print('Found ' + str(len(l_path_csv)) + ' files')
+
+    l_layers = []
+    for c_path_csv in l_path_csv:
+        k = re.findall(r'[[][0-9]+[]]',c_path_csv)
+        i = re.findall('[0-9]+',k[0])
+        l_layers.append(str(i[0]))
+
+    print('Found: ' + len(l_layers))
+
+    return l_layers
