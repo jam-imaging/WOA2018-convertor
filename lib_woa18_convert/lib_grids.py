@@ -21,15 +21,19 @@ def get_depth_layers(dir_csv):
     import os
 
     l_path_csv = os.listdir(dir_csv)
-    l_path_csv = [s for s in l_path_csv if '.csv' in s]
+
+    l_path_csv = [s for s in l_path_csv if '.asc' in s]
     print('Found ' + str(len(l_path_csv)) + ' files')
 
     l_layers = []
     for c_path_csv in l_path_csv:
-        k = re.findall(r'[[][0-9]+[]]',c_path_csv)
-        i = re.findall('[0-9]+',k[0])
-        l_layers.append(str(i[0]))
+        #k = re.findall(r'[[][0-9]+[]]',c_path_csv)
+        #i = re.findall('[0-9]+',k[0])
+        #l_layers.append(str(i[0]))
 
-    print('Found: ' + len(l_layers))
+        i = c_path_csv[c_path_csv.find('depth_[')+7:c_path_csv.find(']')]
+        l_layers.append(str(i))
+
+    print('Found: ' + str(len(l_layers)) + 'layers')
 
     return l_layers

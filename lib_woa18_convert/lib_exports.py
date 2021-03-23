@@ -94,6 +94,7 @@ def csv_to_asc_depth_all(config_grid):
 def asc_to_asc_minmax_all(config_grid):
 
     import pandas as pd
+    import os
 
     try:
         
@@ -106,11 +107,10 @@ def asc_to_asc_minmax_all(config_grid):
         if not os.path.isdir(dir_out_max):
             os.makedirs(dir_out_max)
 
-        #need to get depth layers
         config_grid = make_lat_lon_grids(config_grid)
-
-        l_path_asc = get_dir_list(dir_asc,[])
-        l_depth_layers = ['10']
+        l_path_asc  = get_dir_list(dir_asc,[])
+        l_depth_layers = get_depth_layers(os.path.dirname(l_path_asc[0]))
+        print(l_depth_layers)
 
         for curr_depth_layer in l_depth_layers:
 
