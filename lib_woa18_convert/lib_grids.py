@@ -27,10 +27,6 @@ def get_depth_layers(dir_csv):
 
     l_layers = []
     for c_path_csv in l_path_csv:
-        #k = re.findall(r'[[][0-9]+[]]',c_path_csv)
-        #i = re.findall('[0-9]+',k[0])
-        #l_layers.append(str(i[0]))
-
         i = c_path_csv[c_path_csv.find('depth_[')+7:c_path_csv.find(']')]
         l_layers.append(str(i))
 

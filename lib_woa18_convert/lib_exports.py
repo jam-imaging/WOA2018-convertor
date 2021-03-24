@@ -53,6 +53,60 @@ def csv_to_asc_raw_all(config_grid):
         
     return None
 
+
+def asc_to_asc_depth_all(config_grid):
+
+    import pandas as pd
+    import os
+
+    try:
+        
+        dir_asc      = config_grid['dir_asc']
+        dir_out      = dir_asc + '/depth'
+
+        if not os.path.isdir(dir_out):
+            os.makedirs(dir_out)
+
+        config_grid = make_lat_lon_grids(config_grid)
+        l_path_asc  = get_dir_list(dir_asc,[])
+        l_depth_layers = get_depth_layers(os.path.dirname(l_path_asc[0]))
+
+        for curr_depth_layer in l_depth_layers:
+
+            c = [s for s in l_path_asc if '[' + curr_depth_layer + ']' in s]
+            print('Number of files found: ' + str(len(c)))
+            df = pd.DataFrame()
+
+            all_data = []
+            with open(c[0],'r') as file_dat:
+                lines_all = file_dat.readlines()
+                lines_all = lines_all[6:]
+                for line_curr in lines_all:
+                    all_data  = all_data + (line_curr.split())
+            df['data'] = all_data
+            df = df.astype(float)
+            df[df !=-9999.0] = int(curr_depth_layer)
+
+            path_asc = dir_out + '/depth_' + '_depth_[' +  curr_depth_layer + '].asc'
+            write_asc_header(path_asc, config_grid)
+
+            with open(path_asc,'a+') as file_asc:
+                c_i = 0
+                for c_lat in config_grid['bins_lat']:
+                    for c_lon in config_grid['bins_lon']:
+                        file_asc.write(str(df['data'].iloc[c_i]) + ' ')
+                        c_i = c_i + 1
+                    file_asc.write('\n')
+
+            print('Depth layer: ' + curr_depth_layer + ', Saved > ' +  path_asc)
+            file_asc.close()  
+
+    except ValueError as e:
+        print("Error: {}: {}".format(type(e).__name__, e))
+        
+    return None
+
+
 def csv_to_asc_depth_all(config_grid):
 
     try:

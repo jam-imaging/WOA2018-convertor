@@ -9,6 +9,7 @@ dict_help = {
     'r':'convert single CSV file to depth layered set of raw data ASC files',
     'rm':'convert multiple CSV files to depth layered sets of raw data ASC files',
     'd':'convert single CSV file to depth layered set of depth data ASC files',
+    'da':'convert ASC files to depth layered set of depth data ASC files',
     'mm':'convert multiple depth layered sets of ASC files to single depth layered set of min and max ASC files',
     'p':'enable option for using multiprocessing with N number of processes'
 }
@@ -46,6 +47,12 @@ if __name__ == "__main__":
                                 help=dict_help['d']
                                 )
 
+            my_parser.add_argument('-da',
+                                metavar='-depthasc',
+                                type=str,
+                                help=dict_help['da']
+                                )
+
             my_parser.add_argument('-mm',
                                 metavar='-minmax',
                                 type=str,
@@ -68,6 +75,11 @@ if __name__ == "__main__":
                 print(dict_help['d'])
                 config_grid['path_csv'] = args.d
                 l_woa.csv_to_asc_depth_all(config_grid)
+
+            if args.da:
+                print(dict_help['da'])
+                config_grid['dir_asc'] = args.da
+                l_woa.asc_to_asc_depth_all(config_grid)
 
             if args.rm:
                 print(dict_help['rm'])
