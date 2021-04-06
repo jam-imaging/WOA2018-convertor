@@ -11,7 +11,8 @@ dict_help = {
     'd':'convert single CSV file to depth layered set of depth data ASC files',
     'da':'convert ASC files to depth layered set of depth data ASC files',
     'mm':'convert multiple depth layered sets of ASC files to single depth layered set of min and max ASC files',
-    'p':'enable option for using multiprocessing with N number of processes'
+    'p':'enable option for using multiprocessing with N number of processes',
+    'o':'output directory'
 }
 
 config_grid = {
@@ -64,7 +65,18 @@ if __name__ == "__main__":
                                 type=str,
                                 help=dict_help['p']
                                 )
+
+            my_parser.add_argument('-o',
+                                metavar='-out',
+                                type=str,
+                                help=dict_help['o']
+                                )
+
             args = my_parser.parse_args()
+
+            if args.o:
+                print(dict_help['o'])
+                config_grid['dir_out'] = args.o
 
             if args.r:
                 print(dict_help['r'])

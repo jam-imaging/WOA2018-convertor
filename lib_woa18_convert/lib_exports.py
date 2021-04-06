@@ -19,7 +19,7 @@ def csv_to_asc_raw_all(config_grid):
     try:
         df_dat       = get_csv_data(config_grid)
         curr_dataset = os.path.basename(config_grid['path_csv']).split('.')[0]
-        dir_out      = os.path.dirname(config_grid['path_csv']) + '/' + curr_dataset
+        dir_out      = config_grid['dir_out'] + '/' + curr_dataset
 
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
@@ -62,7 +62,7 @@ def asc_to_asc_depth_all(config_grid):
     try:
         
         dir_asc      = config_grid['dir_asc']
-        dir_out      = dir_asc + '/depth'
+        dir_out      = config_grid['dir_out'] + '/depth'
 
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
@@ -112,7 +112,7 @@ def csv_to_asc_depth_all(config_grid):
     try:
         df_dat       = get_csv_data(config_grid)
         curr_dataset = os.path.basename(config_grid['path_csv']).split('.')[0]
-        dir_out      = os.path.dirname(config_grid['path_csv']) + '/depth_' + curr_dataset
+        dir_out      = config_grid['dir_out'] + '/depth_' + curr_dataset
 
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
@@ -153,8 +153,8 @@ def asc_to_asc_minmax_all(config_grid):
     try:
         
         dir_asc      = config_grid['dir_asc']
-        dir_out_min  = dir_asc + '/min'
-        dir_out_max  = dir_asc + '/max'
+        dir_out_min  = config_grid['dir_out'] + '/min'
+        dir_out_max  = config_grid['dir_out'] + '/max'
 
         if not os.path.isdir(dir_out_min):
             os.makedirs(dir_out_min)
