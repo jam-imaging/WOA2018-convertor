@@ -24,8 +24,49 @@ def csv_to_asc_raw_all(config_grid):
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
 
-        config_grid = make_lat_lon_grids(config_grid)
+        config_grid = make_asc_lat_lon_grids(config_grid)
 
+        l_depth_layers = list(df_dat.columns)
+        l_depth_layers = l_depth_layers[2:]
+
+        for curr_depth_layer in l_depth_layers:
+
+            path_asc = dir_out + '/' + curr_dataset + '_depth_[' +  curr_depth_layer + '].asc'
+            write_asc_header(path_asc, config_grid)
+
+            with open(path_asc,'a+') as file_asc:
+                for c_lat in config_grid['bins_lat']:
+                    for c_lon in config_grid['bins_lon']:
+                        res = df_dat[curr_depth_layer].loc[(df_dat['LAT'] == c_lat) & (df_dat['LON'] == c_lon)]
+                        if len(res):
+                            r = (res.item())
+                            r = round(r,3)
+                        else:
+                            r = -9999
+                        file_asc.write(str(r) + ' ')
+                    file_asc.write('\n')
+
+            print('Depth layer: ' + curr_depth_layer + ', Saved > ' +  path_asc)
+            file_asc.close()   
+    except ValueError as e:
+        print("Error: {}: {}".format(type(e).__name__, e))
+        
+    return None
+
+
+def asc_to_asc_raw_all(config_grid):
+
+    try:
+
+        df_dat       = get_asc_data(config_grid)
+        curr_dataset = os.path.basename(config_grid['path_dat']).split('.')[0]
+        dir_out      = config_grid['dir_out'] + '/' + curr_dataset
+
+        if not os.path.isdir(dir_out):
+            os.makedirs(dir_out)
+
+        config_grid = make_asc_lat_lon_grids(config_grid)
+    
         l_depth_layers = list(df_dat.columns)
         l_depth_layers = l_depth_layers[2:]
 
@@ -67,7 +108,7 @@ def asc_to_asc_depth_all(config_grid):
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
 
-        config_grid = make_lat_lon_grids(config_grid)
+        config_grid = make_asc_lat_lon_grids(config_grid)
         l_path_asc  = get_dir_list(dir_asc,[])
         l_depth_layers = get_depth_layers(os.path.dirname(l_path_asc[0]))
 
@@ -117,7 +158,7 @@ def csv_to_asc_depth_all(config_grid):
         if not os.path.isdir(dir_out):
             os.makedirs(dir_out)
 
-        config_grid = make_lat_lon_grids(config_grid)
+        config_grid = make_asc_lat_lon_grids(config_grid)
 
         l_depth_layers = list(df_dat.columns)
         l_depth_layers = l_depth_layers[2:]
@@ -153,18 +194,20 @@ def asc_to_asc_minmax_all(config_grid):
     try:
         
         dir_asc      = config_grid['dir_asc']
-        dir_out_min  = config_grid['dir_out'] + '/min'
-        dir_out_max  = config_grid['dir_out'] + '/max'
+        dir_out      = config_grid['dir_out']
+        dir_out_min  = dir_out + '/min'
+        dir_out_max  = dir_out + '/max'
 
+        if not os.path.isdir(dir_out):
+            os.makedirs(dir_out)
         if not os.path.isdir(dir_out_min):
             os.makedirs(dir_out_min)
         if not os.path.isdir(dir_out_max):
             os.makedirs(dir_out_max)
 
-        config_grid = make_lat_lon_grids(config_grid)
+        config_grid = make_asc_lat_lon_grids(config_grid)
         l_path_asc  = get_dir_list(dir_asc,[])
         l_depth_layers = get_depth_layers(os.path.dirname(l_path_asc[0]))
-        print(l_depth_layers)
 
         for curr_depth_layer in l_depth_layers:
 

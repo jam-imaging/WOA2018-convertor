@@ -6,13 +6,14 @@ import os
 from multiprocessing import Pool
 
 dict_help = {
-    'r':'convert single CSV file to depth layered set of raw data ASC files',
-    'rm':'convert multiple CSV files to depth layered sets of raw data ASC files',
-    'd':'convert single CSV file to depth layered set of depth data ASC files',
-    'da':'convert ASC files to depth layered set of depth data ASC files',
-    'mm':'convert multiple depth layered sets of ASC files to single depth layered set of min and max ASC files',
-    'p':'enable option for using multiprocessing with N number of processes',
-    'o':'output directory'
+    'r':'extract csv raw data > input: single CSV file, output: single folder with ASC files',
+    'rm':'extract csv raw data (multiple files) > input: single folder with multiple CSV files, output: multiple folders with ASC files',
+    'a': 'extract asc to raw data > input: WOA15 asc file, output: single folder with ASC files',
+    'd':'extract csv depth data > input: single CSV file, output: single folder with ASC files',
+    'da':'extract asc depth data > input: single folder with ASC files, output: single folder with ASC files',
+    'mm':'extract asc min max data > input: multiple folders with ASC files, output: single folder with ASC files',
+    'p':'enable multiprocessing > input: N number of processes',
+    'o':'set output directory >  input: output directory name'
 }
 
 config_grid = {
@@ -41,31 +42,31 @@ if __name__ == "__main__":
                                 type=str,
                                 help=dict_help['rm']
                                 )
-
+            my_parser.add_argument('-a',
+                                metavar='-rasc',
+                                type=str,
+                                help=dict_help['a']
+                                )                                
             my_parser.add_argument('-d',
                                 metavar='-depth',
                                 type=str,
                                 help=dict_help['d']
                                 )
-
             my_parser.add_argument('-da',
                                 metavar='-depthasc',
                                 type=str,
                                 help=dict_help['da']
                                 )
-
             my_parser.add_argument('-mm',
                                 metavar='-minmax',
                                 type=str,
                                 help=dict_help['mm']
                                 )
-
             my_parser.add_argument('-p',
                                 metavar='-pro',
                                 type=str,
                                 help=dict_help['p']
                                 )
-
             my_parser.add_argument('-o',
                                 metavar='-out',
                                 type=str,
@@ -82,6 +83,12 @@ if __name__ == "__main__":
                 print(dict_help['r'])
                 config_grid['path_csv'] = args.r
                 l_woa.csv_to_asc_raw_all(config_grid)
+
+            if args.a:
+                print(dict_help['a'])
+                config_grid['path_dat'] = args.a
+                config_grid['depth_layers'] = ['0']
+                l_woa.asc_to_asc_raw_all(config_grid)
 
             if args.d:
                 print(dict_help['d'])

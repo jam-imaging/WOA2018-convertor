@@ -1,3 +1,6 @@
+from .lib_grids import *
+
+
 def get_csv_data(config_grid):
     
     import pandas as pd
@@ -44,3 +47,60 @@ def get_dir_list(dir_name, dir_list):
         else:
             dir_list.append(path_full)
     return dir_list
+
+
+def get_asc_data(config_grid):
+
+    import pandas as pd
+    import numpy as np
+
+    df = {}
+    config_grid = make_dat_lat_lon_grids(config_grid)
+    
+    try:
+
+        path_dat = config_grid['path_dat']
+
+        df['LAT'] = []
+        df['LON'] = []
+
+        for c_lat in config_grid['bins_lat']:
+            for c_lon in config_grid['bins_lon']:
+                df['LAT'].append(c_lat)
+                c_lon = c_lon + 180.0
+                if c_lon > 179.5:
+                    c_lon = c_lon-360.0
+                df['LON'].append(c_lon)
+                
+        all_data = []
+
+        with open(path_dat,'r') as file_dat:
+            lines_all = file_dat.readlines()
+            for line_curr in lines_all:
+                #line_curr = line_curr.strip()
+                line_curr = line_curr.split('\n')[0]
+                d = [line_curr[i:i+8] for i in range(0, len(line_curr), 8)]
+                all_data.extend(d)  
+
+        size_layer = len(df['LAT'])
+        curr_depth_layer = -1
+        size_c = size_layer
+
+        for c_data in all_data:
+            if size_c >= size_layer:
+                size_c = 0
+                curr_depth_layer = curr_depth_layer + 1
+                df[str(curr_depth_layer)] = []
+            
+            df[str(curr_depth_layer)].append(float(c_data))
+
+            size_c = size_c + 1
+
+        df_dat = pd.DataFrame.from_dict(df)
+        df_dat = df_dat.replace(-99.9999,-9999.0)
+        df_dat = df_dat.replace('-99.9999',-9999.0)
+
+    except Exception as e:
+        print("Error: {}: {}".format(type(e).__name__, e))
+
+    return(df_dat)
