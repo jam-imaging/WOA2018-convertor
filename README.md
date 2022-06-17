@@ -1,4 +1,4 @@
-# WOA Grid Generator
+# WOA 2018 data convertor
 ---
 
 
