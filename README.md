@@ -1,6 +1,7 @@
-# WOA 2018 data convertor
+# (World Ocean Atlas 2018) WOA2018 data convertor
 ---
-
+## World Ocean Atlas 2018 data
+https://www.ncei.noaa.gov/access/world-ocean-atlas-2018/
 
 ## Summary
 
